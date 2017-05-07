@@ -1,0 +1,12 @@
+Let U = 50 documents as provided
+Let D = complete training set
+Let D+ = set of relevant documents in D
+Let D- = set of irrelevant documents in D
+Let T = number of training set
+Let S = number of testing set
+LET P = percentage of the split of training set
+
+P = 0.65;
+T = ceiling( |U| x P );
+S = floor( |U| x (1-P) );
+
