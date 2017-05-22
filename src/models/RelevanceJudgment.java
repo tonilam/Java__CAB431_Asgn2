@@ -13,4 +13,14 @@ public class RelevanceJudgment {
 	public String topicId;
 	public int docId;
 	public boolean relevance;
+	
+	/**
+	 * Constructor to initialize attributes.
+	 * @since 1.0
+	 */
+	public RelevanceJudgment() {
+		topicId = "";
+		docId = -1;
+		relevance = false;
+	}
 }

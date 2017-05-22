@@ -3,9 +3,12 @@
  */
 package factories;
 
+import java.io.FileNotFoundException;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import factories.handler.DocumentHandler;
 import models.Document;
 
 /**
@@ -31,13 +34,15 @@ public class DocumentFactory {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();         
             saxParser.parse(uri, handler);
+        } catch (FileNotFoundException e) {
+        	System.out.println("File not found.\n" + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
 	}
 
 	public int getDocId() {
-		return doc.newsitem_itemid;
+		return doc.attributes.itemid;
 	}
 	
 	public String getTitle() {

@@ -3,9 +3,7 @@
  */
 package factories;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
+import factories.handler.TopicOfInterestHandler;
 import models.TopicOfInterest;
 
 /**
@@ -16,6 +14,7 @@ import models.TopicOfInterest;
  */
 public class TopicOfInterestFactory {
 	private TopicOfInterest toi;
+	private String topic;
 	
 	/**
 	 * Constructor
@@ -24,20 +23,17 @@ public class TopicOfInterestFactory {
 		toi = new TopicOfInterest();
 	}
 	
-	public void setTopic(String uri) {
+	public void setTopics(String uri) {
 		TopicOfInterestHandler handler = new TopicOfInterestHandler();
-		toi = handler.getDocument();
-		try {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            SAXParser saxParser = factory.newSAXParser();         
-            saxParser.parse(uri, handler);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		toi = handler.getTopicOfInterest(topic, uri);
+	}
+
+	public void setTopic(String topic) {
+		this.topic = topic;
 	}
 
 	public String getTopicId() {
-		return toi.topicId;
+		return toi.topicNum;
 	}
 	
 	public String getTitle() {
