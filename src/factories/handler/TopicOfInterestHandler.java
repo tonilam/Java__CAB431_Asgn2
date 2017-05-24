@@ -109,7 +109,7 @@ public class TopicOfInterestHandler {
 				start = false;
 			}
 			if (start) {
-				content += line;
+				content += line + " ";
 			}
 		}
 		scanner.close();
