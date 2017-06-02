@@ -2,8 +2,10 @@ package main;
 
 import java.io.File;
 
-import config.AppConfig;
+import org.apache.commons.math3.stat.StatUtils;
+
 import lib.evaluation.Evaluator;
+import lib.files.Log;
 
 /**
  * <p>TASK 1: read a topic-doc-assignments file (e.g., topicdocassign.txt, the benchmark) 
@@ -26,62 +28,71 @@ import lib.evaluation.Evaluator;
  * @version 2.0, Apr 23, 2017
  */
 public class Evaluation {
+	static double precisions_BaselineModel[];
+	static double precisions_IFModel[];
 	
-	public static int topicId = 1;
-
 	public static void main(String[] args) {
-		for (int i = 1; i <= 50; ++i) {
-			System.out.println("==================================================================================");
-			System.out.format("=======================      Topic ID R1%02d      ==============================\n", i);
-			System.out.println("==================================================================================");
+		Log.create(".//src//resources//result//Evaluation//EvaluationResult.dat");
+		Log.verbose(true);
+		int startDoc = 1;
+		int maxDoc = 50;
+		precisions_BaselineModel = new double[maxDoc];
+		precisions_IFModel = new double[maxDoc];
+		for (int i = startDoc; i < startDoc + maxDoc; ++i) {
+			Log.out("==================================================================================");
+			Log.out("===========================      Topic ID R1%02d      ==============================",
+					i);
+			Log.out("==================================================================================");
 			
 			evaluateTopic(i);
 		}
+
+		Log.out("==================================================================================");
+		Log.out("==========================      Model Comparision      ===========================");
+		Log.out("==================================================================================");
+		Log.out("Mean Average Precision (MAP):");
+		Log.out(">>> MAP for Baseline Model: %f",
+				StatUtils.mean(precisions_BaselineModel));
+		Log.out(">>> MAP for IF Model: %f",
+				StatUtils.mean(precisions_IFModel));
+		Evaluator.tTest(precisions_BaselineModel, precisions_IFModel);
+		Log.write();
 	}
 		
 	public static void evaluateTopic(int topicId) {
 		File benchmark = new File(String.format(".//src//resources//topicassignment101-150//Training1%02d.txt", topicId));
-		File irOutput = new File(String.format(".//src//resources//result//BaselineResult%d.txt", topicId));
-		File ifOutput = new File(String.format(".//src//resources//result//Result%d.txt", topicId));
-		
+		File irOutput = new File(String.format(".//src//resources//result//BaselineModel//result%d.txt", topicId));
+		File ifOutput = new File(String.format(".//src//resources//result//IFModel//result%d.txt", topicId));
+
 		try {
 			/**
 			 * Evaluator may throw the following exception:
 			 * IOException, NumberFormatException, RelevanceJudgmentException
 			 */
+			Log.out("Baseline Model");
 			String topic = String.format("R1%02d", topicId); 
 			Evaluator evaluator = new Evaluator(topic, benchmark, irOutput);
-			int numOfRelevantDoc = evaluator.getNumOfRelevantDocuments();
-			int numOfRetrievedAndRelevantDoc = evaluator.getNumOfRetrievedAndRelevantDocuments();
-			double recall = evaluator.calculateRecall();
-			double precision = evaluator.calculatePrecision();
+			double averagePrecision = evaluator.calculateAveragePrecision();
 			double fMeasure = evaluator.calculateFMeasure();
-			
-			System.out.format("The number of relevant documents = %d\n", numOfRelevantDoc);
-			System.out.format("The number of retrieved relevant documents = %d\n", numOfRetrievedAndRelevantDoc);
-			System.out.format("recall = %.6f\n", recall);
-			System.out.format("precision = %.6f\n", precision);
-			System.out.format("F-Measure = %.6f\n", fMeasure);
 
+			Log.out("F1 Measure: %.12f",
+					fMeasure);
+			Log.out("Average Precision: %.12f", averagePrecision);
+			Log.linebreak();
+			precisions_BaselineModel[topicId-1] = averagePrecision;
 		
-		
+
+			Log.out("IF Model");
 			evaluator = new Evaluator(topic, benchmark, ifOutput);
-			numOfRelevantDoc = evaluator.getNumOfRelevantDocuments();
-			numOfRetrievedAndRelevantDoc = evaluator.getNumOfRetrievedAndRelevantDocuments();
-			recall = evaluator.calculateRecall();
-			precision = evaluator.calculatePrecision();
+			averagePrecision = evaluator.calculateAveragePrecision();
 			fMeasure = evaluator.calculateFMeasure();
-			
-			System.out.format("The number of relevant documents = %d\n", numOfRelevantDoc);
-			System.out.format("The number of retrieved relevant documents = %d\n", numOfRetrievedAndRelevantDoc);
-			System.out.format("recall = %.6f\n", recall);
-			System.out.format("precision = %.6f\n", precision);
-			System.out.format("F-Measure = %.6f\n", fMeasure);
-		
-		
-		
-		
-		
+
+			Log.out("F1 Measure: %.12f",
+					fMeasure);
+			Log.out("Average Precision: %.12f",
+					averagePrecision);
+			Log.linebreak();
+			precisions_IFModel[topicId-1] = averagePrecision;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

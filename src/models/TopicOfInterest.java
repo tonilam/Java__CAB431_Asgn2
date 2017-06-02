@@ -3,6 +3,8 @@
  */
 package models;
 
+import models.factories.DocumentFactory;
+
 /**
  * @author Toni Lam
  *
@@ -14,6 +16,7 @@ public class TopicOfInterest {
 	public String title;
 	public String desc;
 	public String narr;
+	
 	
 	/**
 	 * Constructor to initialize attributes.
