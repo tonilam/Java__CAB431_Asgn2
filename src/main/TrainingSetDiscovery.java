@@ -41,10 +41,10 @@ public class TrainingSetDiscovery {
 			System.out.println("Topic keywords: " + relfty.getQueryString());
 			System.out.printf("Total %d relevant documents.\n", result.get("rel").size());
 			
-			BufferedWriter output = null;
+			PrintStream out = null;
 		    try {
 		    	File file = new File(".//src//resources//result//BaselineResult"+i+".txt");
-		    	PrintStream out = new PrintStream(new FileOutputStream(file));
+		    	out = new PrintStream(new FileOutputStream(file));
 
 	            out.println("Method = TF*IDF Ranking Function");
 	            out.println("Threshold = " + relfty.getThreshold());
@@ -63,12 +63,8 @@ public class TrainingSetDiscovery {
 	        } catch ( IOException e ) {
 	            e.printStackTrace();
 	        } finally {
-	        	if ( output != null ) {
-	        		try {
-	        			output.close();
-	        		} catch (IOException e) {
-	        			e.printStackTrace();
-	        		}
+	        	if ( out != null ) {
+	        		out.close();
 	        	}
 	        }
 

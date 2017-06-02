@@ -13,6 +13,7 @@ public class RelevanceJudgment {
 	public String topicId;
 	public int docId;
 	public boolean relevance;
+	public double degree;
 	
 	/**
 	 * Constructor to initialize attributes.
@@ -22,5 +23,6 @@ public class RelevanceJudgment {
 		topicId = "";
 		docId = -1;
 		relevance = false;
+		degree = -1;
 	}
 }
